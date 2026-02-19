@@ -18,6 +18,11 @@ export const uploadFile = asyncHandler(async (req, res) => {
     res.status(200).json({
         success: true,
         message: 'File processed successfully',
-        data: result,
+        total: result.total,
+        inserted: result.inserted,
+        skipped: result.skipped,
+        failed: result.failed,
+        errors: result.errors.slice(0, 10), // send first 10 errors max
     });
 });
+

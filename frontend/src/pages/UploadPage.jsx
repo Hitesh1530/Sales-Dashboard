@@ -125,10 +125,15 @@ export default function UploadPage() {
                     <AlertTitle>Upload Successful!</AlertTitle>
                     <Stack spacing={0.5} mt={1}>
                         <Typography variant="body2">📦 Total processed: <strong>{uploadResult.total?.toLocaleString()}</strong></Typography>
-                        <Typography variant="body2">✅ Inserted: <strong>{uploadResult.inserted?.toLocaleString()}</strong></Typography>
+                        <Typography variant="body2" color="success.main">✅ Inserted: <strong>{uploadResult.inserted?.toLocaleString()}</strong></Typography>
+                        {uploadResult.skipped > 0 && (
+                            <Typography variant="body2" color="text.secondary">
+                                ⏭ Skipped (duplicates / already in DB): <strong>{uploadResult.skipped?.toLocaleString()}</strong>
+                            </Typography>
+                        )}
                         {uploadResult.failed > 0 && (
-                            <Typography variant="body2" color="warning.main">
-                                ⚠️ Failed: <strong>{uploadResult.failed}</strong>
+                            <Typography variant="body2" color="error.main">
+                                ❌ Failed: <strong>{uploadResult.failed}</strong>
                             </Typography>
                         )}
                     </Stack>
@@ -136,13 +141,13 @@ export default function UploadPage() {
                     {uploadResult.errors?.length > 0 && (
                         <Box mt={2}>
                             <Divider sx={{ mb: 1 }} />
-                            <Typography variant="body2" fontWeight={600}>Validation errors (first 5):</Typography>
+                            <Typography variant="body2" fontWeight={600}>Errors (first {uploadResult.errors.length}):</Typography>
                             <List dense>
                                 {uploadResult.errors.slice(0, 5).map((e, i) => (
                                     <ListItem key={i} disableGutters>
                                         <ListItemText
-                                            primary={`Row ${e.row}: ${e.error}`}
-                                            primaryTypographyProps={{ variant: 'body2', color: 'warning.dark' }}
+                                            primary={e.error || e}
+                                            primaryTypographyProps={{ variant: 'body2', color: 'error.main' }}
                                         />
                                     </ListItem>
                                 ))}
@@ -151,6 +156,7 @@ export default function UploadPage() {
                     )}
                 </Alert>
             )}
+
 
             {/* Error */}
             {uploadError && (
