@@ -4,20 +4,19 @@ import dotenv from 'dotenv';
 import uploadRoutes from './routes/upload-routes.js';
 import productsRoutes from './routes/products-routes.js';
 import { errorHandler, notFound } from './middleware/error-handler.js';
-import { checkDatabase } from './db/init.js';
+import { migrate } from './migrate.js';
 
-// Load environment variables
+// Load environment variables first
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// ── Middleware ────────────────────────────────────────────────────────────────
 app.use(cors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     credentials: true,
 }));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -27,38 +26,33 @@ app.use((req, res, next) => {
     next();
 });
 
-// Health check route
+// ── Routes ────────────────────────────────────────────────────────────────────
 app.get('/health', (req, res) => {
     res.status(200).json({
         success: true,
-        message: 'Server is running',
+        message: 'Server is running. products table is ready.',
         timestamp: new Date().toISOString(),
     });
 });
 
-// API Routes
 app.use('/api/upload', uploadRoutes);
 app.use('/api/products', productsRoutes);
 
-// 404 handler
 app.use(notFound);
-
-// Error handler (must be last)
 app.use(errorHandler);
 
-// Start server
+// ── Startup ───────────────────────────────────────────────────────────────────
 const startServer = async () => {
     try {
-        const dbExists = await checkDatabase();
-        if (!dbExists) {
-            console.log('⚠️  Products table not found. Run "node src/db/init.js" to initialize.');
-        }
+        // Full boot sequence: schema init → v2 upgrades → auto-seed if empty
+        await migrate();
 
         app.listen(PORT, () => {
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
-            console.log(`🔗 API URL: http://localhost:${PORT}`);
+            console.log(`🔗 Health: http://localhost:${PORT}/health`);
+            console.log(`🔗 API:    http://localhost:${PORT}/api/products`);
             console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         });
     } catch (error) {

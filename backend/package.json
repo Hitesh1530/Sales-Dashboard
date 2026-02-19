@@ -7,8 +7,10 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "setup": "node src/migrate.js",
+    "seed": "node src/migrate.js",
+    "test": "node --test tests/products-service.test.mjs",
+    "test:watch": "node --test --watch tests/products-service.test.mjs"
   },
   "keywords": [
     "sales",
