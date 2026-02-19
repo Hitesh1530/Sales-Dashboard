@@ -211,7 +211,7 @@ export default function DataTablePage() {
                                     <TableCell
                                         key={col.id}
                                         align={col.align || 'left'}
-                                        sx={{ fontWeight: 700, bgcolor: 'grey.50', minWidth: col.minWidth }}
+                                        sx={{ fontWeight: 700, bgcolor: 'background.paper', minWidth: col.minWidth }}
                                     >
                                         {col.sortable ? (
                                             <TableSortLabel

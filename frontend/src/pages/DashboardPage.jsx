@@ -80,11 +80,18 @@ export default function DashboardPage() {
         }
     };
 
-    // Common chart options
+    // Common chart options — all colours adapt to dark / light mode
+    const labelColor = isDark ? '#94a3b8' : '#64748b';
+    const gridColor = isDark ? '#1e293b' : '#f1f5f9';
+    const dataLabelColor = isDark ? '#ffffff' : '#1e293b'; // white on dark, near-black on light bars
     const baseOptions = {
         chart: { fontFamily: 'Inter, sans-serif', background: 'transparent' },
         theme: { mode: isDark ? 'dark' : 'light' },
         tooltip: { theme: isDark ? 'dark' : 'light' },
+        grid: { borderColor: gridColor, strokeDashArray: 3 },
+        xaxis: { labels: { style: { colors: labelColor, fontSize: '11px' } } },
+        yaxis: { labels: { style: { colors: labelColor } } },
+        legend: { labels: { colors: labelColor } },
     };
 
     // ── Chart 1: Products per Category ────────────────────────────────────────
@@ -100,7 +107,7 @@ export default function DashboardPage() {
         xaxis: { categories: byCategory.map(r => r.category), labels: { style: { fontSize: '11px' } } },
         yaxis: { title: { text: 'Count' } },
         colors: ['#6366f1'],
-        dataLabels: { enabled: true },
+        dataLabels: { enabled: true, style: { colors: [dataLabelColor] } },
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => `${v} products` } },
         title: { text: '💡 Click a bar to filter the Data Table', align: 'right', style: { fontSize: '10px', color: '#94a3b8', fontWeight: 400 } },
     };
@@ -136,7 +143,7 @@ export default function DashboardPage() {
         },
         yaxis: { title: { text: 'Number of Products' } },
         colors: ['#f59e0b'],
-        dataLabels: { enabled: true },
+        dataLabels: { enabled: true, style: { colors: [dataLabelColor] } },
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => `${v} products` } },
     };
     const discountSeries = [{ name: 'Products', data: discountDistribution.map(r => parseInt(r.count)) }];
@@ -154,7 +161,7 @@ export default function DashboardPage() {
         xaxis: { categories: avgRatingByCategory.map(r => r.category), labels: { style: { fontSize: '11px' } } },
         yaxis: { min: 0, max: 5, title: { text: 'Avg Rating' }, tickAmount: 5 },
         colors: ['#ec4899'],
-        dataLabels: { enabled: true, formatter: (v) => v?.toFixed(2) },
+        dataLabels: { enabled: true, formatter: (v) => v?.toFixed(2), style: { colors: [dataLabelColor] } },
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => `${v} / 5` } },
         title: { text: '💡 Click a bar to filter the Data Table', align: 'right', style: { fontSize: '10px', color: '#94a3b8', fontWeight: 400 } },
     };
@@ -171,7 +178,7 @@ export default function DashboardPage() {
                 📊 Product Analytics Dashboard
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                Real-time analytics from {totalProducts.toLocaleString()} products across {byCategory.length} categories
+                Insights across {totalProducts.toLocaleString()} products in {byCategory.length} categories — click any chart bar to explore the data.
             </Typography>
 
             <Grid container spacing={3}>
@@ -179,7 +186,7 @@ export default function DashboardPage() {
                 <Grid item xs={12} md={6}>
                     <ChartCard
                         title="Products per Category"
-                        subtitle="COUNT(*) GROUP BY category"
+                        subtitle="Distribution of products across all categories"
                         loading={byCategoryLoading}
                         onRetry={() => dispatch(fetchByCategory())}
                     >
@@ -193,7 +200,7 @@ export default function DashboardPage() {
                 <Grid item xs={12} md={6}>
                     <ChartCard
                         title="Top 10 Reviewed Products"
-                        subtitle="ORDER BY rating_count DESC LIMIT 10"
+                        subtitle="Products with the highest number of customer reviews"
                         loading={topReviewedLoading}
                         onRetry={() => dispatch(fetchTopReviewed(10))}
                     >
@@ -207,7 +214,7 @@ export default function DashboardPage() {
                 <Grid item xs={12} md={6}>
                     <ChartCard
                         title="Discount Distribution"
-                        subtitle="Histogram of discount_percentage in 20% buckets"
+                        subtitle="How heavily products are discounted from their original price"
                         loading={discountLoading}
                         onRetry={() => dispatch(fetchDiscountDistribution())}
                     >
@@ -221,7 +228,7 @@ export default function DashboardPage() {
                 <Grid item xs={12} md={6}>
                     <ChartCard
                         title="Avg Rating by Category"
-                        subtitle="AVG(rating) GROUP BY category"
+                        subtitle="Average customer satisfaction score per product category"
                         loading={avgRatingLoading}
                         onRetry={() => dispatch(fetchAvgRatingByCategory())}
                     >

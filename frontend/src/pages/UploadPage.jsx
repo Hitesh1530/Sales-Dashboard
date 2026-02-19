@@ -59,14 +59,15 @@ export default function UploadPage() {
                 onDragLeave={() => setDragOver(false)}
                 onClick={() => fileInputRef.current?.click()}
                 sx={{
-                    border: dragOver ? '2px dashed #6366f1' : '2px dashed #ccc',
+                    border: dragOver ? '2px dashed' : '2px dashed',
+                    borderColor: dragOver ? 'primary.main' : 'divider',
                     borderRadius: 3,
                     p: 5,
                     textAlign: 'center',
                     cursor: 'pointer',
-                    bgcolor: dragOver ? 'primary.50' : 'grey.50',
+                    bgcolor: dragOver ? 'action.selected' : 'action.hover',
                     transition: 'all 0.2s',
-                    '&:hover': { borderColor: 'primary.main', bgcolor: 'primary.50' },
+                    '&:hover': { borderColor: 'primary.main', bgcolor: 'action.selected' },
                     mb: 3,
                 }}
             >
@@ -167,7 +168,7 @@ export default function UploadPage() {
             )}
 
             {/* Instructions */}
-            <Card sx={{ mt: 3, borderRadius: 2, bgcolor: 'grey.50' }} variant="outlined">
+            <Card sx={{ mt: 3, borderRadius: 2, bgcolor: 'background.paper' }} variant="outlined">
                 <CardContent>
                     <Typography variant="subtitle2" fontWeight={700} gutterBottom>
                         📋 Expected Column Format
