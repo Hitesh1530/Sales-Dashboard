@@ -5,17 +5,29 @@ dotenv.config();
 
 const { Pool } = pg;
 
-// Create PostgreSQL connection pool
-const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 5432,
-    database: process.env.DB_NAME || 'sales_dashboard',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD,
-    max: 20, // Maximum number of clients in the pool
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 2000,
-});
+// Create PostgreSQL connection pool.
+// When deployed to Render / Railway / Supabase / Neon etc., set the
+// DATABASE_URL environment variable and it will be used automatically
+// (with SSL enabled for cloud providers).
+// For local development keep the individual DB_* variables in .env.
+const pool = process.env.DATABASE_URL
+    ? new Pool({
+        connectionString: process.env.DATABASE_URL,
+        ssl: { rejectUnauthorized: false }, // required by most cloud Postgres providers
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+    })
+    : new Pool({
+        host: process.env.DB_HOST || 'localhost',
+        port: parseInt(process.env.DB_PORT) || 5432,
+        database: process.env.DB_NAME || 'sales_dashboard',
+        user: process.env.DB_USER || 'postgres',
+        password: process.env.DB_PASSWORD,
+        max: 20,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 2000,
+    });
 
 // Test connection
 pool.on('connect', () => {
