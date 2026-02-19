@@ -1,0 +1,41 @@
+sale_date,order_id,product_id,product_name,category,region,units,unit_price
+2024-01-15,ORD001,PRD001,Laptop Pro,Electronics,North America,5,1299.99
+2024-01-15,ORD002,PRD002,Wireless Mouse,Accessories,Europe,15,29.99
+2024-01-16,ORD003,PRD003,USB-C Cable,Accessories,Asia,30,12.99
+2024-01-16,ORD004,PRD001,Laptop Pro,Electronics,Europe,3,1299.99
+2024-01-17,ORD005,PRD004,Mechanical Keyboard,Accessories,North America,8,89.99
+2024-01-17,ORD006,PRD005,HD Monitor,Electronics,Asia,6,349.99
+2024-01-18,ORD007,PRD006,Office Chair,Furniture,North America,4,299.99
+2024-01-18,ORD008,PRD007,Standing Desk,Furniture,Europe,2,599.99
+2024-01-19,ORD009,PRD002,Wireless Mouse,Accessories,Asia,20,29.99
+2024-01-19,ORD010,PRD008,Webcam HD,Electronics,North America,10,79.99
+2024-01-20,ORD011,PRD009,Desk Lamp,Furniture,Europe,12,39.99
+2024-01-20,ORD012,PRD010,Notebook Set,Stationery,Asia,50,9.99
+2024-01-21,ORD013,PRD001,Laptop Pro,Electronics,North America,7,1299.99
+2024-01-21,ORD014,PRD011,Pen Set,Stationery,Europe,40,5.99
+2024-01-22,ORD015,PRD005,HD Monitor,Electronics,Asia,8,349.99
+2024-01-22,ORD016,PRD012,Ergonomic Mouse Pad,Accessories,North America,25,19.99
+2024-01-23,ORD017,PRD013,Wireless Headphones,Electronics,Europe,12,149.99
+2024-01-23,ORD018,PRD006,Office Chair,Furniture,Asia,5,299.99
+2024-01-24,ORD019,PRD014,Coffee Mug,Stationery,North America,35,12.99
+2024-01-24,ORD020,PRD015,Phone Stand,Accessories,Europe,18,24.99
+2024-01-25,ORD021,PRD016,Tablet,Electronics,Asia,9,499.99
+2024-01-25,ORD022,PRD007,Standing Desk,Furniture,North America,3,599.99
+2024-01-26,ORD023,PRD017,Printer,Electronics,Europe,4,199.99
+2024-01-26,ORD024,PRD018,Paper Shredder,Electronics,Asia,6,89.99
+2024-01-27,ORD025,PRD019,Bookshelf,Furniture,North America,8,179.99
+2024-01-27,ORD026,PRD020,Wall Clock,Furniture,Europe,15,29.99
+2024-01-28,ORD027,PRD021,Smartwatch,Electronics,Asia,11,299.99
+2024-01-28,ORD028,PRD022,Bluetooth Speaker,Electronics,North America,14,69.99
+2024-01-29,ORD029,PRD023,Cable Organizer,Accessories,Europe,30,14.99
+2024-01-29,ORD030,PRD024,Monitor Arm,Accessories,Asia,7,79.99
+2024-01-30,ORD031,PRD001,Laptop Pro,Electronics,North America,6,1299.99
+2024-01-30,ORD032,PRD025,External SSD,Electronics,Europe,10,129.99
+2024-01-31,ORD033,PRD026,Gaming Mouse,Accessories,Asia,16,59.99
+2024-01-31,ORD034,PRD027,RGB Keyboard,Accessories,North America,9,109.99
+2024-02-01,ORD035,PRD005,HD Monitor,Electronics,Europe,5,349.99
+2024-02-01,ORD036,PRD028,Desk Mat,Accessories,Asia,22,24.99
+2024-02-02,ORD037,PRD029,USB Hub,Accessories,North America,18,34.99
+2024-02-02,ORD038,PRD030,Laptop Stand,Accessories,Europe,13,44.99
+2024-02-03,ORD039,PRD013,Wireless Headphones,Electronics,Asia,10,149.99
+2024-02-03,ORD040,PRD031,Microphone,Electronics,North America,8,89.99
