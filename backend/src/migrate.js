@@ -60,24 +60,27 @@ async function run() {
 
     console.log('   ✅ Schema upgrades applied\n');
 
-    // ── Step 3: Seed data only if the products table is empty ────────────────
-    console.log('3️⃣  Checking for existing data...');
+    // ── Step 3: Seed data — only when AUTO_SEED=true AND table is empty ─────
+    console.log('3️⃣  Checking data...');
     const { rows } = await pool.query('SELECT COUNT(*) AS cnt FROM products');
     const count = parseInt(rows[0].cnt);
 
     if (count > 0) {
-        console.log(`   ℹ️  Table already has ${count} products — skipping seed\n`);
-    } else if (fs.existsSync(DATASET_PATH)) {
-        console.log(`   📂 Table is empty. Seeding from dataset...`);
-        const result = await processUpload(DATASET_PATH);
-        console.log(
-            `   ✅ Seeded: ${result.inserted} inserted, ${result.failed} skipped/failed\n`
-        );
+        console.log(`   ℹ️  ${count} products already in database\n`);
+    } else if (process.env.AUTO_SEED === 'true') {
+        // LOCAL DEV ONLY: set AUTO_SEED=true in backend/.env to seed on first run
+        if (fs.existsSync(DATASET_PATH)) {
+            console.log('   📂 AUTO_SEED=true and table is empty — seeding from dataset...');
+            const result = await processUpload(DATASET_PATH);
+            console.log(
+                `   ✅ Seeded: ${result.inserted} inserted, ${result.failed} skipped\n`
+            );
+        } else {
+            console.log('   ⚠️  AUTO_SEED=true but dataset file not found — skipping\n');
+        }
     } else {
-        console.log(
-            '   ⚠️  Table is empty and dataset file not found.\n' +
-            '       Upload data via the UI at /upload once the server starts.\n'
-        );
+        // Production default: empty DB is fine — users upload via the UI
+        console.log('   ℹ️  Table is empty. Upload data via the UI at /upload\n');
     }
 
     const final = await pool.query('SELECT COUNT(*) AS cnt FROM products');
