@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-    Box, Grid, Card, CardContent, Typography, Skeleton, Alert, Button,
+    Box, Grid, Card, CardContent, Typography, Skeleton, Alert, Button, useMediaQuery,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import ReactApexChart from 'react-apexcharts';
@@ -48,6 +48,9 @@ export default function DashboardPage() {
     const navigate = useNavigate();
     const muiTheme = useTheme();
     const isDark = muiTheme.palette.mode === 'dark';
+    const isMobile = useMediaQuery(muiTheme.breakpoints.down('sm'));
+    const isTablet = useMediaQuery(muiTheme.breakpoints.between('sm', 'md'));
+    const chartHeight = isMobile ? 220 : isTablet ? 260 : 300;
 
     const {
         byCategory, byCategoryLoading,
@@ -83,7 +86,24 @@ export default function DashboardPage() {
     // Common chart options — all colours adapt to dark / light mode
     const labelColor = isDark ? '#94a3b8' : '#64748b';
     const gridColor = isDark ? '#1e293b' : '#f1f5f9';
-    const dataLabelColor = isDark ? '#ffffff' : '#1e293b'; // white on dark, near-black on light bars
+    const dataLabelColor = isDark ? '#ffffff' : '#1e293b';
+
+    // Data labels: hidden on mobile (bars too narrow), smaller font on tablet
+    const makeDataLabels = (formatter) => ({
+        enabled: !isMobile,
+        ...(formatter ? { formatter } : {}),
+        style: {
+            fontSize: isTablet ? '9px' : '11px',
+            fontWeight: 600,
+            colors: [dataLabelColor],
+        },
+        dropShadow: { enabled: false },
+        offsetY: -2,
+    });
+
+    // Column width adapts to available space (fewer categories = wider bars look better)
+    const colWidth = isMobile ? '75%' : '55%';
+
     const baseOptions = {
         chart: { fontFamily: 'Inter, sans-serif', background: 'transparent' },
         theme: { mode: isDark ? 'dark' : 'light' },
@@ -103,23 +123,43 @@ export default function DashboardPage() {
             toolbar: { show: false },
             events: { dataPointSelection: handleCategoryBarClick },
         },
-        plotOptions: { bar: { borderRadius: 6, columnWidth: '55%', cursor: 'pointer' } },
+        plotOptions: { bar: { borderRadius: 6, columnWidth: colWidth, cursor: 'pointer' } },
         xaxis: { categories: byCategory.map(r => r.category), labels: { style: { fontSize: '11px' } } },
         yaxis: { title: { text: 'Count' } },
         colors: ['#6366f1'],
-        dataLabels: { enabled: true, style: { colors: [dataLabelColor] } },
+        dataLabels: makeDataLabels(),
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => `${v} products` } },
         title: { text: '💡 Click a bar to filter the Data Table', align: 'right', style: { fontSize: '10px', color: '#94a3b8', fontWeight: 400 } },
     };
     const byCatSeries = [{ name: 'Products', data: byCategory.map(r => parseInt(r.product_count)) }];
 
     // ── Chart 2: Top Reviewed Products ────────────────────────────────────────
+    const compactNum = (v) => {
+        if (v >= 1_000_000) return (v / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (v >= 1_000) return (v / 1_000).toFixed(0) + 'K';
+        return String(v);
+    };
     const topRevOptions = {
         ...baseOptions,
         chart: { ...baseOptions.chart, type: 'bar', toolbar: { show: false } },
-        plotOptions: { bar: { borderRadius: 6, horizontal: true } },
-        xaxis: { title: { text: 'Review Count' }, labels: { formatter: (v) => Number(v).toLocaleString() } },
-        yaxis: { labels: { style: { fontSize: '10px' }, formatter: (v) => v?.length > 25 ? v.substring(0, 25) + '…' : v } },
+        plotOptions: { bar: { borderRadius: 6, horizontal: true, barHeight: '65%' } },
+        xaxis: {
+            title: { text: 'Review Count', style: { color: labelColor } },
+            tickAmount: 4,
+            labels: {
+                formatter: compactNum,
+                style: { colors: labelColor, fontSize: '11px' },
+            },
+        },
+        yaxis: {
+            labels: {
+                style: { fontSize: '10px', colors: labelColor },
+                formatter: (v) => {
+                    const max = isMobile ? 18 : 28;
+                    return v?.length > max ? v.substring(0, max) + '…' : v;
+                },
+            },
+        },
         colors: ['#10b981'],
         dataLabels: { enabled: false },
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => Number(v).toLocaleString() + ' reviews' } },
@@ -143,7 +183,7 @@ export default function DashboardPage() {
         },
         yaxis: { title: { text: 'Number of Products' } },
         colors: ['#f59e0b'],
-        dataLabels: { enabled: true, style: { colors: [dataLabelColor] } },
+        dataLabels: makeDataLabels(),
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => `${v} products` } },
     };
     const discountSeries = [{ name: 'Products', data: discountDistribution.map(r => parseInt(r.count)) }];
@@ -157,11 +197,11 @@ export default function DashboardPage() {
             toolbar: { show: false },
             events: { dataPointSelection: handleAvgRatingBarClick },
         },
-        plotOptions: { bar: { borderRadius: 6, columnWidth: '55%', cursor: 'pointer' } },
+        plotOptions: { bar: { borderRadius: 6, columnWidth: colWidth, cursor: 'pointer' } },
         xaxis: { categories: avgRatingByCategory.map(r => r.category), labels: { style: { fontSize: '11px' } } },
         yaxis: { min: 0, max: 5, title: { text: 'Avg Rating' }, tickAmount: 5 },
         colors: ['#ec4899'],
-        dataLabels: { enabled: true, formatter: (v) => v?.toFixed(2), style: { colors: [dataLabelColor] } },
+        dataLabels: makeDataLabels((v) => v?.toFixed(2)),
         tooltip: { ...baseOptions.tooltip, y: { formatter: (v) => `${v} / 5` } },
         title: { text: '💡 Click a bar to filter the Data Table', align: 'right', style: { fontSize: '10px', color: '#94a3b8', fontWeight: 400 } },
     };
@@ -173,15 +213,20 @@ export default function DashboardPage() {
     const totalProducts = byCategory.reduce((a, r) => a + parseInt(r.product_count || 0), 0);
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Typography variant="h4" fontWeight={700} gutterBottom>
+        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+            <Typography
+                variant="h4"
+                fontWeight={700}
+                gutterBottom
+                sx={{ fontSize: { xs: '1.4rem', sm: '1.75rem', md: '2.125rem' } }}
+            >
                 📊 Product Analytics Dashboard
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
                 Insights across {totalProducts.toLocaleString()} products in {byCategory.length} categories — click any chart bar to explore the data.
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={{ xs: 2, md: 3 }}>
                 {/* Chart 1: Products per Category */}
                 <Grid item xs={12} md={6}>
                     <ChartCard
@@ -191,7 +236,7 @@ export default function DashboardPage() {
                         onRetry={() => dispatch(fetchByCategory())}
                     >
                         {byCategory.length > 0
-                            ? <ReactApexChart type="bar" options={byCatOptions} series={byCatSeries} height={300} />
+                            ? <ReactApexChart type="bar" options={byCatOptions} series={byCatSeries} height={chartHeight} />
                             : <Alert severity="info">No data yet — upload a file first</Alert>}
                     </ChartCard>
                 </Grid>
@@ -205,7 +250,7 @@ export default function DashboardPage() {
                         onRetry={() => dispatch(fetchTopReviewed(10))}
                     >
                         {topReviewed.length > 0
-                            ? <ReactApexChart type="bar" options={topRevOptions} series={topRevSeries} height={300} />
+                            ? <ReactApexChart type="bar" options={topRevOptions} series={topRevSeries} height={chartHeight} />
                             : <Alert severity="info">No data yet — upload a file first</Alert>}
                     </ChartCard>
                 </Grid>
@@ -219,7 +264,7 @@ export default function DashboardPage() {
                         onRetry={() => dispatch(fetchDiscountDistribution())}
                     >
                         {discountDistribution.length > 0
-                            ? <ReactApexChart type="bar" options={discountOptions} series={discountSeries} height={300} />
+                            ? <ReactApexChart type="bar" options={discountOptions} series={discountSeries} height={chartHeight} />
                             : <Alert severity="info">No data yet — upload a file first</Alert>}
                     </ChartCard>
                 </Grid>
@@ -233,7 +278,7 @@ export default function DashboardPage() {
                         onRetry={() => dispatch(fetchAvgRatingByCategory())}
                     >
                         {avgRatingByCategory.length > 0
-                            ? <ReactApexChart type="bar" options={avgRatingOptions} series={avgRatingSeries} height={300} />
+                            ? <ReactApexChart type="bar" options={avgRatingOptions} series={avgRatingSeries} height={chartHeight} />
                             : <Alert severity="info">No data yet — upload a file first</Alert>}
                     </ChartCard>
                 </Grid>

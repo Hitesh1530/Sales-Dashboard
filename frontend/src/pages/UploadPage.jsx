@@ -43,8 +43,13 @@ export default function UploadPage() {
     };
 
     return (
-        <Box sx={{ p: 3, maxWidth: 680, mx: 'auto' }}>
-            <Typography variant="h4" fontWeight={700} gutterBottom>
+        <Box sx={{ p: { xs: 2, sm: 3 }, maxWidth: 680, mx: 'auto' }}>
+            <Typography
+                variant="h4"
+                fontWeight={700}
+                gutterBottom
+                sx={{ fontSize: { xs: '1.4rem', sm: '1.75rem', md: '2.125rem' } }}
+            >
                 📤 Upload Product Data
             </Typography>
             <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
@@ -62,7 +67,7 @@ export default function UploadPage() {
                     border: dragOver ? '2px dashed' : '2px dashed',
                     borderColor: dragOver ? 'primary.main' : 'divider',
                     borderRadius: 3,
-                    p: 5,
+                    p: { xs: 3, sm: 5 },
                     textAlign: 'center',
                     cursor: 'pointer',
                     bgcolor: dragOver ? 'action.selected' : 'action.hover',

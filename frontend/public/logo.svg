@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Master gradient: top-left mint → bottom-right deep cyan (matches original exactly) -->
+    <linearGradient id="g" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#00e5b0"/>
+      <stop offset="50%"  stop-color="#00c8d4"/>
+      <stop offset="100%" stop-color="#0096c7"/>
+    </linearGradient>
+  </defs>
+
+  <!--
+    2×2 grid layout with uniform 8% padding:
+      Canvas: 512×512
+      Outer padding: 40px each side → usable area: 432×432
+      Gap between cells: 24px
+      Cell size: (432 - 24) / 2 = 204px
+      Stroke width: 38px  (≈ original ~15% of cell)
+      Corner radius: 46px (≈ original proportion)
+
+    Grid origin: (40, 40)
+    Cell positions:
+      TL: x=40,  y=40
+      TR: x=268, y=40
+      BL: x=40,  y=268
+      BR: x=268, y=268
+  -->
+
+  <!-- Top-Left (tall rectangle) -->
+  <rect x="40"  y="40"  width="204" height="204" rx="46" ry="46"
+        fill="none" stroke="url(#g)" stroke-width="38"/>
+
+  <!-- Top-Right (small square) -->
+  <rect x="268" y="40"  width="204" height="98"  rx="38" ry="38"
+        fill="none" stroke="url(#g)" stroke-width="38"/>
+
+  <!-- Bottom-Left (wide rectangle) -->
+  <rect x="40"  y="268" width="204" height="98"  rx="38" ry="38"
+        fill="none" stroke="url(#g)" stroke-width="38"/>
+
+  <!-- Bottom-Right (tall rectangle) -->
+  <rect x="268" y="268" width="204" height="204" rx="46" ry="46"
+        fill="none" stroke="url(#g)" stroke-width="38"/>
+</svg>

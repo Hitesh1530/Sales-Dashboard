@@ -121,14 +121,26 @@ export default function DataTablePage() {
     };
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+        <Box sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: { xs: 'flex-start', sm: 'center' },
+                justifyContent: 'space-between',
+                gap: 1,
+                mb: 1
+            }}>
                 <Box>
-                    <Typography variant="h4" fontWeight={700} gutterBottom>
+                    <Typography
+                        variant="h4"
+                        fontWeight={700}
+                        gutterBottom
+                        sx={{ fontSize: { xs: '1.4rem', sm: '1.75rem', md: '2.125rem' } }}
+                    >
                         📋 Products Data Table
                     </Typography>
-                    <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                        {pagination.total.toLocaleString()} products | Server-side pagination, sorting, filtering &amp; search
+                    <Typography variant="body1" color="text.secondary" sx={{ mb: { xs: 1, sm: 2 } }}>
+                        {pagination.total.toLocaleString()} products &mdash; paginated, sortable &amp; searchable
                     </Typography>
                 </Box>
 
@@ -138,7 +150,7 @@ export default function DataTablePage() {
                     startIcon={<DownloadIcon />}
                     onClick={handleExportCSV}
                     disabled={exportLoading || pagination.total === 0}
-                    sx={{ height: 40, whiteSpace: 'nowrap' }}
+                    sx={{ height: 40, whiteSpace: 'nowrap', width: { xs: '100%', sm: 'auto' } }}
                 >
                     {exportLoading ? 'Exporting...' : `Export CSV (${pagination.total.toLocaleString()})`}
                 </Button>
@@ -161,11 +173,11 @@ export default function DataTablePage() {
                                     </InputAdornment>
                                 ),
                             }}
-                            sx={{ minWidth: 260 }}
+                            sx={{ width: { xs: '100%', sm: 260 } }}
                         />
 
                         {/* Category Filter */}
-                        <FormControl size="small" sx={{ minWidth: 200 }}>
+                        <FormControl size="small" sx={{ width: { xs: '100%', sm: 200 } }}>
                             <InputLabel>Category</InputLabel>
                             <Select value={localCategory} label="Category" onChange={e => setLocalCategory(e.target.value)}>
                                 <MenuItem value="">All Categories</MenuItem>
@@ -176,7 +188,7 @@ export default function DataTablePage() {
                         </FormControl>
 
                         {/* Min Rating Filter */}
-                        <FormControl size="small" sx={{ minWidth: 160 }}>
+                        <FormControl size="small" sx={{ width: { xs: '100%', sm: 160 } }}>
                             <InputLabel>Min Rating</InputLabel>
                             <Select value={localMinRating} label="Min Rating" onChange={e => setLocalMinRating(e.target.value)}>
                                 <MenuItem value="">All Ratings</MenuItem>
@@ -203,7 +215,7 @@ export default function DataTablePage() {
 
             {/* Table */}
             <Card sx={{ borderRadius: 2 }}>
-                <TableContainer component={Paper} elevation={0}>
+                <TableContainer component={Paper} elevation={0} sx={{ overflowX: 'auto' }}>
                     <Table size="small" stickyHeader>
                         <TableHead>
                             <TableRow>
